@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase } from './supabaseClient'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Settings, MessageSquare } from 'lucide-react'
+import { Settings, Terminal } from 'lucide-react'
 import FeedbackForm from './components/FeedbackForm'
 import AdminLogin from './components/AdminLogin'
 import AdminDashboard from './components/AdminDashboard'
@@ -27,19 +27,20 @@ export default function App() {
     <div className="app-container">
       <motion.p 
         initial={{ opacity: 0 }} 
-        animate={{ opacity: 1 }} 
+        animate={{ opacity: 1, scale: [0.98, 1, 0.98] }} 
+        transition={{ repeat: Infinity, duration: 2 }}
         className="text-gradient glow-text"
-        style={{ fontSize: '1.5rem', fontWeight: 600 }}
+        style={{ fontSize: '1.25rem', fontWeight: 500, letterSpacing: '0.1em', textTransform: 'uppercase' }}
       >
-        Loading System...
+        Initializing System...
       </motion.p>
     </div>
   )
 
   if (session) return (
     <div className="app-container">
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
+      <div className="grid-background"></div>
+      <div className="glow-orb"></div>
       <div className="content-wrapper">
         <AdminDashboard session={session} />
       </div>
@@ -48,39 +49,32 @@ export default function App() {
 
   return (
     <div className="app-container">
-      {/* Background Blobs */}
-      <div className="blob blob-1"></div>
-      <div className="blob blob-2"></div>
-      <div className="blob blob-3"></div>
+      {/* Structural Background */}
+      <div className="grid-background"></div>
+      <div className="glow-orb"></div>
 
       <div className="content-wrapper">
         {/* Header / Nav */}
         <motion.div 
-          initial={{ y: -50, opacity: 0 }}
+          initial={{ y: -30, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}
+          transition={{ type: "spring", stiffness: 300, damping: 25 }}
+          style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', zIndex: 10 }}
         >
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-            <div className="glow-effect" style={{ background: 'var(--accent-secondary)', padding: '0.5rem', borderRadius: '12px' }}>
-              <MessageSquare color="#0b0c10" size={24} />
+            <div style={{ background: 'var(--panel-bg)', border: '1px solid var(--border-subtle)', padding: '0.5rem', borderRadius: '4px' }}>
+              <Terminal color="var(--accent-primary)" size={24} />
             </div>
-            <h1 style={{ fontSize: '1.75rem', margin: 0 }} className="text-gradient">Feedback Portal</h1>
+            <h1 style={{ fontSize: '1.5rem', margin: 0, textTransform: 'uppercase', letterSpacing: '0.05em' }} className="text-gradient">Feedback_Portal</h1>
           </div>
           
           <button 
             onClick={() => setShowLogin(!showLogin)}
-            className="glass-panel"
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '0.5rem', 
-              padding: '0.5rem 1rem', color: 'var(--text-secondary)',
-              transition: 'all 0.3s'
-            }}
-            onMouseOver={(e) => e.currentTarget.style.color = 'var(--accent-color)'}
-            onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
+            className="cyber-btn"
+            style={{ padding: '0.5rem 1rem', fontSize: '0.85rem' }}
           >
-            <Settings size={18} />
-            {showLogin ? 'Back to Form' : 'Admin Login'}
+            <Settings size={16} />
+            {showLogin ? 'RETURN TO FORM' : 'ADMIN ACCESS'}
           </button>
         </motion.div>
 
@@ -88,10 +82,10 @@ export default function App() {
         <AnimatePresence mode="wait">
           <motion.div
             key={showLogin ? 'login' : 'form'}
-            initial={{ x: 20, opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: -20, opacity: 0 }}
-            transition={{ duration: 0.3 }}
+            initial={{ scale: 0.95, opacity: 0, filter: 'blur(10px)' }}
+            animate={{ scale: 1, opacity: 1, filter: 'blur(0px)' }}
+            exit={{ scale: 1.05, opacity: 0, filter: 'blur(10px)' }}
+            transition={{ type: "spring", stiffness: 400, damping: 30 }}
             className="page-transition"
           >
             {showLogin ? <AdminLogin /> : <FeedbackForm />}

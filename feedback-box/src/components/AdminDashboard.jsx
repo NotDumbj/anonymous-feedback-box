@@ -6,7 +6,7 @@ import FeedbackItem from './FeedbackItem'
 
 export default function AdminDashboard({ session }) {
   const [feedbackList, setFeedbackList] = useState([])
-  const [filter, setFilter] = useState('all') // 'all', 'pending', 'reviewed'
+  const [filter, setFilter] = useState('all')
   const [categoryFilter, setCategoryFilter] = useState('all')
 
   const fetchFeedback = async () => {
@@ -20,7 +20,6 @@ export default function AdminDashboard({ session }) {
   useEffect(() => {
     fetchFeedback()
 
-    // Realtime subscription
     const channel = supabase
       .channel('feedback-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'feedback' }, () => {
@@ -39,17 +38,19 @@ export default function AdminDashboard({ session }) {
     return statusMatch && catMatch
   })
 
-  const FilterPill = ({ active, onClick, children }) => (
+  const FilterTab = ({ active, onClick, children }) => (
     <button
       onClick={onClick}
       style={{
-        padding: '0.4rem 1rem',
-        borderRadius: '20px',
-        fontSize: '0.85rem',
-        fontWeight: active ? 'bold' : 'normal',
-        background: active ? 'var(--accent-secondary)' : 'rgba(255,255,255,0.05)',
-        color: active ? '#0b0c10' : 'var(--text-secondary)',
-        border: `1px solid ${active ? 'var(--accent-secondary)' : 'var(--glass-border)'}`,
+        padding: '0.4rem 1.25rem',
+        borderRadius: '0',
+        fontSize: '0.8rem',
+        textTransform: 'uppercase',
+        letterSpacing: '0.05em',
+        fontWeight: active ? '600' : '400',
+        background: active ? 'rgba(99, 102, 241, 0.1)' : 'transparent',
+        color: active ? 'var(--accent-primary)' : 'var(--text-secondary)',
+        borderBottom: `2px solid ${active ? 'var(--accent-primary)' : 'transparent'}`,
         transition: 'all 0.2s',
       }}
     >
@@ -58,33 +59,35 @@ export default function AdminDashboard({ session }) {
   )
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', zIndex: 10 }}>
       {/* Dashboard Header */}
       <motion.div 
         initial={{ y: -20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="glass-panel"
+        transition={{ type: "spring", stiffness: 300, damping: 25 }}
+        className="cyber-panel"
         style={{ 
           display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
           padding: '1.25rem 2rem', marginBottom: '2rem' 
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-          <div className="glow-effect" style={{ background: 'var(--accent-color)', padding: '0.4rem', borderRadius: '8px' }}>
-            <Activity color="#0b0c10" size={20} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <div style={{ border: '1px solid var(--accent-primary)', background: 'rgba(99, 102, 241, 0.1)', padding: '0.4rem', borderRadius: '4px' }}>
+            <Activity color="var(--accent-primary)" size={20} />
           </div>
-          <h2 style={{ margin: 0, fontSize: '1.25rem' }}>Admin Dashboard</h2>
+          <h2 style={{ margin: 0, fontSize: '1.25rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>System_Overview</h2>
         </div>
         
         <button 
           onClick={handleSignOut}
           style={{ 
             display: 'flex', alignItems: 'center', gap: '0.5rem', 
-            color: '#ff4b4b', padding: '0.4rem 0.8rem', borderRadius: '8px',
-            background: 'rgba(255, 75, 75, 0.1)', transition: 'background 0.2s'
+            color: 'var(--accent-danger)', padding: '0.4rem 0.8rem', borderRadius: '4px',
+            background: 'rgba(239, 68, 68, 0.1)', transition: 'all 0.2s',
+            border: '1px solid rgba(239, 68, 68, 0.2)', textTransform: 'uppercase', fontSize: '0.8rem', letterSpacing: '0.05em'
           }}
-          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(255, 75, 75, 0.2)'}
-          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(255, 75, 75, 0.1)'}
+          onMouseOver={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)'; e.currentTarget.style.borderColor = 'var(--accent-danger)' }}
+          onMouseOut={(e) => { e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)'; e.currentTarget.style.borderColor = 'rgba(239, 68, 68, 0.2)' }}
         >
           <LogOut size={16} />
           Sign Out
@@ -95,24 +98,25 @@ export default function AdminDashboard({ session }) {
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.1 }}
-        style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}
+        transition={{ type: "spring", stiffness: 300, damping: 25, delay: 0.1 }}
+        className="cyber-panel"
+        style={{ padding: '0.5rem 1rem', marginBottom: '2rem', display: 'flex', gap: '2rem', flexWrap: 'wrap', alignItems: 'center' }}
       >
-        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flexWrap: 'wrap' }}>
-          <Filter size={18} color="var(--text-secondary)" />
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Status:</span>
-          <FilterPill active={filter === 'all'} onClick={() => setFilter('all')}>All</FilterPill>
-          <FilterPill active={filter === 'pending'} onClick={() => setFilter('pending')}>Pending</FilterPill>
-          <FilterPill active={filter === 'reviewed'} onClick={() => setFilter('reviewed')}>Reviewed</FilterPill>
-          
-          <div style={{ width: '1px', height: '20px', background: 'var(--glass-border)', margin: '0 0.5rem' }} />
-          
-          <LayoutGrid size={18} color="var(--text-secondary)" />
-          <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Category:</span>
-          <FilterPill active={categoryFilter === 'all'} onClick={() => setCategoryFilter('all')}>All</FilterPill>
-          <FilterPill active={categoryFilter === 'General'} onClick={() => setCategoryFilter('General')}>General</FilterPill>
-          <FilterPill active={categoryFilter === 'Bug'} onClick={() => setCategoryFilter('Bug')}>Bug</FilterPill>
-          <FilterPill active={categoryFilter === 'Suggestion'} onClick={() => setCategoryFilter('Suggestion')}>Suggestion</FilterPill>
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <Filter size={16} color="var(--text-secondary)" style={{ marginRight: '0.5rem' }} />
+          <FilterTab active={filter === 'all'} onClick={() => setFilter('all')}>All</FilterTab>
+          <FilterTab active={filter === 'pending'} onClick={() => setFilter('pending')}>Pending</FilterTab>
+          <FilterTab active={filter === 'reviewed'} onClick={() => setFilter('reviewed')}>Reviewed</FilterTab>
+        </div>
+        
+        <div style={{ width: '1px', height: '20px', background: 'var(--border-subtle)' }} />
+        
+        <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
+          <LayoutGrid size={16} color="var(--text-secondary)" style={{ marginRight: '0.5rem' }} />
+          <FilterTab active={categoryFilter === 'all'} onClick={() => setCategoryFilter('all')}>All</FilterTab>
+          <FilterTab active={categoryFilter === 'General'} onClick={() => setCategoryFilter('General')}>General</FilterTab>
+          <FilterTab active={categoryFilter === 'Bug'} onClick={() => setCategoryFilter('Bug')}>Bug</FilterTab>
+          <FilterTab active={categoryFilter === 'Suggestion'} onClick={() => setCategoryFilter('Suggestion')}>Suggestion</FilterTab>
         </div>
       </motion.div>
 
@@ -127,10 +131,10 @@ export default function AdminDashboard({ session }) {
         <AnimatePresence>
           {filtered.length === 0 ? (
             <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)' }}
+              initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }}
+              style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: 'var(--text-secondary)', border: '1px dashed var(--border-subtle)', borderRadius: '4px' }}
             >
-              No feedback items match your filters.
+              No data records match current filter parameters.
             </motion.div>
           ) : (
             filtered.map(item => (

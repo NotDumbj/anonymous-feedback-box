@@ -6,50 +6,37 @@
   padding: 2rem;
   position: relative;
   overflow: hidden;
+  background: var(--bg-color);
 }
 
-/* Animated background blobs for the glassmorphism effect */
-.blob {
+/* Cyber-Grid Background */
+.grid-background {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(80px);
-  z-index: -1;
-  animation: float 10s infinite ease-in-out alternate;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-size: 50px 50px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  z-index: 0;
+  mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at center, black 30%, transparent 80%);
+  pointer-events: none;
 }
 
-.blob-1 {
-  top: -10%;
-  left: -10%;
-  width: 500px;
-  height: 500px;
-  background: rgba(102, 252, 241, 0.15);
-}
-
-.blob-2 {
-  bottom: -10%;
-  right: -10%;
-  width: 400px;
-  height: 400px;
-  background: rgba(69, 162, 158, 0.15);
-  animation-delay: -5s;
-}
-
-.blob-3 {
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+.glow-orb {
+  position: absolute;
   width: 600px;
   height: 600px;
-  background: rgba(31, 40, 51, 0.8);
-}
-
-@keyframes float {
-  0% {
-    transform: translateY(0) scale(1);
-  }
-  100% {
-    transform: translateY(-50px) scale(1.1);
-  }
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .content-wrapper {
@@ -65,5 +52,38 @@
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+/* Specific Cyber Components */
+.cyber-btn {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 0.75rem 1.5rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.cyber-btn:hover:not(:disabled) {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+  transform: translateY(-1px);
+}
+
+.cyber-btn-primary {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  color: #ffffff;
+}
+
+.cyber-btn-primary:hover:not(:disabled) {
+  background: #4f46e5;
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
 }
 

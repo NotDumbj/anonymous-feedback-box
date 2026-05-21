@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
 import { motion } from 'framer-motion'
-import { LogIn, Mail, Lock, AlertCircle } from 'lucide-react'
+import { LogIn, Mail, Lock, ShieldAlert } from 'lucide-react'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
@@ -20,34 +20,28 @@ export default function AdminLogin() {
 
   return (
     <motion.div 
-      className="glass-panel"
-      style={{ padding: '2.5rem', width: '100%', maxWidth: '400px' }}
+      className="cyber-panel"
+      style={{ padding: '3rem', width: '100%', maxWidth: '420px' }}
     >
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2rem' }}>
-        <div style={{ background: 'rgba(255,255,255,0.1)', padding: '1rem', borderRadius: '50%', marginBottom: '1rem' }}>
-          <Lock color="var(--accent-color)" size={32} />
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '2.5rem' }}>
+        <div style={{ border: '1px solid var(--accent-primary)', padding: '1rem', borderRadius: '8px', marginBottom: '1.5rem', background: 'var(--panel-bg)', boxShadow: '0 0 20px rgba(99, 102, 241, 0.15) inset' }}>
+          <Lock color="var(--accent-primary)" size={32} />
         </div>
-        <h2 style={{ fontSize: '1.5rem', margin: 0 }}>Admin Access</h2>
-        <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Sign in to manage feedback</p>
+        <h2 style={{ fontSize: '1.25rem', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>System_Auth</h2>
+        <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginTop: '0.5rem', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Enter credentials to proceed</p>
       </div>
 
-      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
         
         <div style={{ position: 'relative' }}>
           <Mail size={18} color="var(--text-secondary)" style={{ position: 'absolute', top: '50%', left: '1rem', transform: 'translateY(-50%)' }} />
           <input 
             type="email" 
-            placeholder="Email Address"
+            placeholder="Identity [Email]"
             value={email} 
             onChange={e => setEmail(e.target.value)} 
-            style={{
-              width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '8px',
-              background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)',
-              border: '1px solid var(--glass-border)', outline: 'none',
-              transition: 'all 0.3s'
-            }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--accent-color)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
+            className="cyber-input"
+            style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 3rem', outline: 'none' }}
           />
         </div>
 
@@ -55,42 +49,42 @@ export default function AdminLogin() {
           <Lock size={18} color="var(--text-secondary)" style={{ position: 'absolute', top: '50%', left: '1rem', transform: 'translateY(-50%)' }} />
           <input 
             type="password" 
-            placeholder="Password"
+            placeholder="Passcode [Hidden]"
             value={password} 
             onChange={e => setPassword(e.target.value)} 
-            style={{
-              width: '100%', padding: '0.75rem 1rem 0.75rem 2.5rem', borderRadius: '8px',
-              background: 'rgba(255,255,255,0.05)', color: 'var(--text-primary)',
-              border: '1px solid var(--glass-border)', outline: 'none',
-              transition: 'all 0.3s'
-            }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--accent-color)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--glass-border)'}
+            className="cyber-input"
+            style={{ width: '100%', padding: '0.85rem 1rem 0.85rem 3rem', outline: 'none' }}
           />
         </div>
 
-        {error && (
-          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#ff4b4b', fontSize: '0.85rem', background: 'rgba(255, 75, 75, 0.1)', padding: '0.5rem', borderRadius: '6px' }}>
-            <AlertCircle size={16} />
-            {error}
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }} 
+              animate={{ opacity: 1, height: 'auto' }} 
+              exit={{ opacity: 0, height: 0 }}
+              style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', color: 'var(--accent-danger)', fontSize: '0.85rem', background: 'rgba(239, 68, 68, 0.1)', padding: '0.75rem', borderRadius: '4px', border: '1px solid rgba(239, 68, 68, 0.3)' }}
+            >
+              <ShieldAlert size={16} style={{ flexShrink: 0, marginTop: '2px' }} />
+              <span>{error}</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         <motion.button 
-          whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           type="submit"
           disabled={isLoading || !email || !password}
+          className={`cyber-btn ${(!isLoading && email && password) ? 'cyber-btn-primary' : ''}`}
           style={{
-            marginTop: '0.5rem', padding: '0.75rem', borderRadius: '8px',
-            background: 'var(--text-primary)', color: 'var(--bg-color)', 
-            fontWeight: 'bold', fontSize: '1rem',
-            display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '0.5rem',
-            opacity: (isLoading || !email || !password) ? 0.7 : 1,
+            marginTop: '0.5rem', padding: '1rem',
+            opacity: (isLoading || !email || !password) ? 0.5 : 1,
             cursor: (isLoading || !email || !password) ? 'not-allowed' : 'pointer'
           }}
         >
-          {isLoading ? 'Authenticating...' : 'Sign In'}
+          <span style={{ textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {isLoading ? 'AUTHENTICATING...' : 'AUTHORIZE_ACCESS'}
+          </span>
           {!isLoading && <LogIn size={18} />}
         </motion.button>
       </form>
