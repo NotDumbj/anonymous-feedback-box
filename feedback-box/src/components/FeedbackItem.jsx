@@ -48,7 +48,7 @@ export default function FeedbackItem({ item, onRefresh }) {
             CLASS: {item.category}
           </span>
           <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontFamily: 'monospace' }}>
-            ID: {item.id.split('-')[0]} // {new Date(item.created_at).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: 'numeric' })}
+            ID: {String(item.id).split('-')[0]} // {new Date(item.created_at).toLocaleDateString(undefined, { month: '2-digit', day: '2-digit', year: 'numeric' })}
           </span>
         </div>
         

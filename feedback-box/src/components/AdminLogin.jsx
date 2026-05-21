@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../supabaseClient'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 import { LogIn, Mail, Lock, ShieldAlert } from 'lucide-react'
 
 export default function AdminLogin() {
@@ -60,6 +60,7 @@ export default function AdminLogin() {
         <AnimatePresence>
           {error && (
             <motion.div 
+              key="error-box"
               initial={{ opacity: 0, height: 0 }} 
               animate={{ opacity: 1, height: 'auto' }} 
               exit={{ opacity: 0, height: 0 }}

@@ -5,6 +5,7 @@ import { Settings, Terminal } from 'lucide-react'
 import FeedbackForm from './components/FeedbackForm'
 import AdminLogin from './components/AdminLogin'
 import AdminDashboard from './components/AdminDashboard'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import './App.css'
 
 export default function App() {
@@ -42,7 +43,9 @@ export default function App() {
       <div className="grid-background"></div>
       <div className="glow-orb"></div>
       <div className="content-wrapper">
-        <AdminDashboard session={session} />
+        <ErrorBoundary>
+          <AdminDashboard session={session} />
+        </ErrorBoundary>
       </div>
     </div>
   )
